@@ -7,7 +7,9 @@ const userSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String },
+    facebookId: { type: String },
     profilePictureUrl: { type: String },
+    posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
