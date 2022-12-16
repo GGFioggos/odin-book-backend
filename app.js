@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var passport = require('passport');
+var bodyParser = require('body-parser');
 
 // DB SETUP
 require('./utils/mongoConfig');
@@ -18,6 +19,7 @@ var authRouter = require('./routes/auth');
 
 var app = express();
 
+app.use(cors());
 app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(passport.authenticate('session'));
