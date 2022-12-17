@@ -22,6 +22,7 @@ var app = express();
 app.use(cors());
 app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,6 +33,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
-//app.use('/auth', authRouter);
+app.use('/auth', authRouter);
 
 module.exports = app;
