@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken');
 
 const { check, body, validationResult } = require('express-validator');
 const User = require('../models/User');
-const { nextDay } = require('date-fns');
+const { response } = require('express');
 
 // PATH /AUTH
 
@@ -18,17 +18,27 @@ router.post('/log-in', async (req, res) => {
             return next(err);
         }
 
-        if (!user || !bcrypt.compare(user.password, password)) {
-            res.json({ error: 'Invalid username or password' });
+        if (!user) {
+            return res.json({ error: 'User does not exist' });
         }
 
-        const token = jwt.sign({ user }, process.env.SECRET, {
-            expiresIn: '10m',
-        });
+        bcrypt.compare(password, user.password, function (err, results) {
+            if (err) {
+                throw new Error(err);
+            }
 
-        res.cookie('token', token);
-        return res.json({
-            message: 'Log in successfully',
+            if (results) {
+                const token = jwt.sign({ user }, process.env.SECRET, {
+                    expiresIn: '10m',
+                });
+
+                res.cookie('token', token, { httpOnly: true });
+                return res.json({
+                    message: 'Log in success',
+                });
+            } else {
+                return res.json({ error: 'Passwords do not match' });
+            }
         });
     });
 });
