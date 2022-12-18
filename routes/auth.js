@@ -3,10 +3,9 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+const authController = require('../controllers/authController');
 
-const { check, body, validationResult } = require('express-validator');
 const User = require('../models/User');
-const { response } = require('express');
 
 // PATH /AUTH
 
@@ -42,5 +41,7 @@ router.post('/log-in', async (req, res) => {
         });
     });
 });
+
+router.post('/sign-up', authController.sign_up);
 
 module.exports = router;

@@ -14,8 +14,6 @@ router.get('/get', cookieJwtAuth, (req, res) => {
     res.json({ message: 'authenticated', user: req.user });
 });
 
-router.post('/create', userController.create_user);
-
 router.get('/:id', userController.get_user);
 
 module.exports = router;
