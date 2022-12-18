@@ -9,6 +9,6 @@ exports.cookieJwtAuth = (req, res, next) => {
         next();
     } catch (err) {
         res.clearCookie('token');
-        return res.json({ error: err });
+        return res.json({ error: 'User not authorized' });
     }
 };
