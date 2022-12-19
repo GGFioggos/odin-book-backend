@@ -34,3 +34,18 @@ exports.create_post = [
         });
     },
 ];
+
+exports.like_post = (req, res) => {
+    Post.findByIdAndUpdate(
+        req.params.id,
+        { $addToSet: { likes: req.user } },
+        { upsert: false },
+        function (err) {
+            if (err) {
+                return res.json(err);
+            }
+
+            return res.json({ message: 'Post liked successfully' });
+        }
+    );
+};

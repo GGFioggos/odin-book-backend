@@ -8,4 +8,6 @@ const { cookieJwtAuth } = require('../middleware/cookieJwtAuth');
 
 router.post('/create', cookieJwtAuth, postController.create_post);
 
+router.post('/:id/like', cookieJwtAuth, postController.like_post);
+
 module.exports = router;
