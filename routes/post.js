@@ -12,4 +12,6 @@ router.post('/:id/like', cookieJwtAuth, postController.like_post);
 
 router.post('/:id/unlike', cookieJwtAuth, postController.unlike_post);
 
+router.post('/:id/comment', cookieJwtAuth, postController.create_comment);
+
 module.exports = router;
