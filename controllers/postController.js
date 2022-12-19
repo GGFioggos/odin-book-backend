@@ -49,3 +49,17 @@ exports.like_post = (req, res) => {
         }
     );
 };
+
+exports.unlike_post = (req, res) => {
+    Post.findByIdAndUpdate(
+        req.params.id,
+        { $pull: { likes: req.user._id } },
+        function (err) {
+            if (err) {
+                return res.json(err);
+            }
+
+            return res.json({ message: 'Post unliked successfully' });
+        }
+    );
+};

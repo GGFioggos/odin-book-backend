@@ -10,4 +10,6 @@ router.post('/create', cookieJwtAuth, postController.create_post);
 
 router.post('/:id/like', cookieJwtAuth, postController.like_post);
 
+router.post('/:id/unlike', cookieJwtAuth, postController.unlike_post);
+
 module.exports = router;
