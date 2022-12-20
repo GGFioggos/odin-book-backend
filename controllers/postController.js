@@ -135,3 +135,37 @@ exports.delete_comment = (req, res) => {
         }
     });
 };
+
+exports.like_comment = (req, res) => {
+    Comment.findByIdAndUpdate(
+        req.params.comment,
+        {
+            $addToSet: { likes: req.user },
+        },
+        { upsert: false },
+        function (err) {
+            if (err) {
+                return res.json(err);
+            }
+
+            return res.json({ message: 'Comment liked successfully' });
+        }
+    );
+};
+
+exports.unlike_comment = (req, res) => {
+    Comment.findByIdAndUpdate(
+        req.params.comment,
+        {
+            $pull: { likes: req.user._id },
+        },
+        { upsert: false },
+        function (err) {
+            if (err) {
+                return res.json(err);
+            }
+
+            return res.json({ message: 'Comment unliked successfully' });
+        }
+    );
+};
