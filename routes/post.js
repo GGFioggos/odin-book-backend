@@ -14,4 +14,10 @@ router.post('/:id/unlike', cookieJwtAuth, postController.unlike_post);
 
 router.post('/:id/comment', cookieJwtAuth, postController.create_comment);
 
+router.post(
+    '/:id/:comment/delete',
+    cookieJwtAuth,
+    postController.delete_comment
+);
+
 module.exports = router;

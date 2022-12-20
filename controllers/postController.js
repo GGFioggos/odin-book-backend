@@ -103,3 +103,35 @@ exports.create_comment = [
         });
     },
 ];
+
+exports.delete_comment = (req, res) => {
+    // REMOVE FROM POST
+    Comment.findById(req.params.comment, (err, comment) => {
+        if (err) {
+            return res.json(err);
+        }
+
+        if (!comment) {
+            return res.json({ message: 'Comment not found' });
+        }
+
+        Post.findByIdAndUpdate(
+            req.params.id,
+            { $pull: { comments: comment._id } },
+            function (err) {
+                if (err) {
+                    return res.json(err);
+                }
+
+                return res.json({ message: 'Comment deleted successfully' });
+            }
+        );
+    });
+
+    // REMOVE FROM COMMENTS
+    Comment.findByIdAndDelete(req.params.comment, (err) => {
+        if (err) {
+            return res.json(err);
+        }
+    });
+};
