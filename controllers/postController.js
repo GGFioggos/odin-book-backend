@@ -14,27 +14,32 @@ exports.create_post = [
             return res.json(errors);
         }
 
-        User.findOne({ email: req.user.email }, (err, user) => {
-            if (err) {
-                return res.json(err);
-            }
+        new Post({
+            author: req.user._id,
+            content: req.body.content,
+            timestamp: Date.now(),
+            comments: [],
+            likes: [],
+        }).save((err, post) => {
+            User.findByIdAndUpdate(
+                req.user._id,
+                {
+                    $addToSet: { posts: post._id },
+                },
+                { upsert: false },
+                function (err) {
+                    if (err) {
+                        return res.json(err);
+                    }
 
-            const post = new Post({
-                author: user,
-                content: req.body.content,
-                timestamp: Date.now(),
-                comments: [],
-                likes: [],
-            }).save((err) => {
-                if (err) {
-                    return res.json(err);
+                    return res.json({ message: 'Post created successfully' });
                 }
-
-                return res.json({ message: 'Post created!' });
-            });
+            );
         });
     },
 ];
+
+exports.delete_post;
 
 exports.like_post = (req, res) => {
     Post.findByIdAndUpdate(
