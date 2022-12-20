@@ -39,7 +39,50 @@ exports.create_post = [
     },
 ];
 
-exports.delete_post;
+exports.delete_post = (req, res) => {
+    Post.findById(req.params.id, (err, post) => {
+        if (err) {
+            return res.json(err);
+        }
+        // CHECK IF THE USER IS THE AUTHOR
+        if (post.author._id != req.user._id) {
+            return res.json({
+                message: 'No authorization to delete this post',
+            });
+        } else {
+            // USER IS THE AUTHOR
+            Post.findByIdAndDelete(req.params.id, (err, post) => {
+                if (!post) {
+                    return res.json({ error: 'Post not found' });
+                }
+                // DELETE FROM USER POSTS
+                User.findByIdAndUpdate(
+                    post.author,
+                    {
+                        $pull: { posts: post._id },
+                    },
+                    { upsert: false },
+                    function (err) {
+                        if (err) {
+                            return res.json(err);
+                        }
+                    }
+                );
+
+                // DELETE COMMENTS FROM COMMENTS DOCUMENT
+                post.comments.forEach((comment) => {
+                    Comment.findByIdAndDelete(comment, (err) => {
+                        if (err) {
+                            return res.json(err);
+                        }
+                    });
+                });
+
+                return res.json({ message: 'Post deleted successfully' });
+            });
+        }
+    });
+};
 
 exports.like_post = (req, res) => {
     Post.findByIdAndUpdate(
