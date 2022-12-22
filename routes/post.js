@@ -6,6 +6,8 @@ const { cookieJwtAuth } = require('../middleware/cookieJwtAuth');
 
 // PATH /POST
 
+router.get('/:id', cookieJwtAuth, postController.get_post);
+
 router.post('/create', cookieJwtAuth, postController.create_post);
 
 router.post('/:id/delete', cookieJwtAuth, postController.delete_post);
