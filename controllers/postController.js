@@ -5,6 +5,26 @@ const Post = require('../models/Post');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 
+// GET
+
+exports.get_post = (req, res) => {
+    Post.findById(req.params.id)
+        .populate('author comments likes')
+        .exec(function (err, post) {
+            if (err) {
+                return res.json(err);
+            }
+
+            if (!post) {
+                return res.json({ error: 'Post not found' });
+            }
+
+            return res.json(post);
+        });
+};
+
+// POST
+
 exports.create_post = [
     body('content', 'Post content is required').trim().escape(),
     (req, res) => {
