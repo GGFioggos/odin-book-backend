@@ -91,7 +91,7 @@ exports.log_in = async (req, res) => {
 
             if (results) {
                 const token = jwt.sign({ user }, process.env.SECRET, {
-                    expiresIn: '20m',
+                    expiresIn: '30m',
                 });
 
                 res.cookie('token', token, { httpOnly: true });
@@ -104,3 +104,5 @@ exports.log_in = async (req, res) => {
         });
     });
 };
+
+exports.log_out = (req, res) => {};
