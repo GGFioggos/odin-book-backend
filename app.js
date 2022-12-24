@@ -6,8 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
-var passport = require('passport');
-var bodyParser = require('body-parser');
+// var passport = require('passport');
 
 // DB SETUP
 require('./utils/mongoConfig');
@@ -22,8 +21,8 @@ var app = express();
 app.use(cors());
 app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.authenticate('session'));
+// app.use(passport.initialize());
+// app.use(passport.authenticate('session'));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
