@@ -10,10 +10,8 @@ const User = require('../models/User');
 
 // PATH /USER
 
-router.get('/get', cookieJwtAuth, (req, res) => {
-    res.json({ message: 'authenticated', user: req.user });
-});
-
 router.get('/:id', userController.get_user);
+
+router.post('/:id/add', cookieJwtAuth, userController.send_friend_request);
 
 module.exports = router;
