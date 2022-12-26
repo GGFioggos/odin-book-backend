@@ -106,4 +106,8 @@ exports.log_in = async (req, res) => {
             });
         });
 };
-exports.log_out = (req, res) => {};
+
+exports.log_out = (req, res) => {
+    res.clearCookie('token');
+    res.end();
+};
