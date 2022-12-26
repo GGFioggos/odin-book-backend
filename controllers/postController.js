@@ -9,7 +9,22 @@ const Comment = require('../models/Comment');
 
 exports.get_post = (req, res) => {
     Post.findById(req.params.id)
-        .populate('author comments likes')
+        .populate('author likes')
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'author',
+                component: 'User',
+            },
+        })
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'likes',
+                component: 'User',
+            },
+        })
+
         .exec(function (err, post) {
             if (err) {
                 return res.json(err);
