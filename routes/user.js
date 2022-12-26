@@ -14,4 +14,16 @@ router.get('/:id', userController.get_user);
 
 router.post('/:id/add', cookieJwtAuth, userController.send_friend_request);
 
+router.post(
+    '/request/:id/accept',
+    cookieJwtAuth,
+    userController.accept_friend_request
+);
+
+router.post(
+    '/request/:id/decline',
+    cookieJwtAuth,
+    userController.decline_friend_request
+);
+
 module.exports = router;
