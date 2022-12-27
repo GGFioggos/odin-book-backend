@@ -34,23 +34,23 @@ exports.sign_up = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            return res.json({ error: errors.array() });
+            return res.status(400).json({ error: errors.array() });
         }
         // CHECK IF USER WITH THE SAME EMAIL EXISTS
         User.findOne({ email: req.body.email }, (err, user) => {
             if (err) {
-                return res.json(err);
+                return res.status(500).json(err);
             }
             // USER EXISTS
             if (user) {
-                return res.json({
+                return res.status(400).json({
                     error: 'A user with the same email already exists',
                 });
             } else {
                 // USER DOES NOT EXIST
                 bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
                     if (err) {
-                        return next(err);
+                        return res.status(500).json({ error: err.message });
                     }
                     const user = new User({
                         firstName: req.body.firstName,
@@ -62,9 +62,9 @@ exports.sign_up = [
                             : faker.image.imageUrl(),
                     }).save((err) => {
                         if (err) {
-                            return next(err);
+                            return res.status(500).json({ error: err.message });
                         }
-                        return res.json({ message: 'Success' });
+                        return res.status(200).json({ message: 'Success' });
                     });
                 });
             }
@@ -79,16 +79,16 @@ exports.log_in = async (req, res) => {
         .select('+password')
         .exec(function (err, user) {
             if (err) {
-                return next(err);
+                return res.status(500).json({ error: err.message });
             }
 
             if (!user) {
-                return res.json({ error: 'User does not exist' });
+                return res.status(404).json({ error: 'User does not exist' });
             }
 
             bcrypt.compare(password, user.password, function (err, results) {
                 if (err) {
-                    throw new Error(err);
+                    return res.status(500).json({ error: err.message });
                 }
 
                 if (results) {
@@ -97,17 +97,19 @@ exports.log_in = async (req, res) => {
                     });
 
                     res.cookie('token', token, { httpOnly: true });
-                    return res.json({
+                    return res.status(200).json({
                         message: 'Log in success',
                     });
                 } else {
-                    return res.json({ error: 'Passwords do not match' });
+                    return res
+                        .status(403)
+                        .json({ error: 'Passwords do not match' });
                 }
             });
         });
 };
 
 exports.log_out = (req, res) => {
-    res.clearCookie('token');
+    res.status(200).clearCookie('token');
     res.end();
 };

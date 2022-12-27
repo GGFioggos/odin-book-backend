@@ -10,35 +10,33 @@ exports.get_user = (req, res, next) => {
         .populate('posts friends friendRequests')
         .exec(function (err, user) {
             if (err) {
-                res.json({ error: err.message });
-                return;
+                return res.status(500).json({ error: err.message });
             }
 
             if (user == null) {
-                res.json({ error: 'User not found' });
-                return;
+                return res.status(404).json({ error: 'User not found' });
             }
 
-            res.json(user);
+            return res.status(200).json(user);
         });
 };
 
 exports.send_friend_request = (req, res, next) => {
     User.findById(req.params.id, function (err, user) {
         if (err) {
-            return res.json(err);
+            return res.status(500).json({ error: err.message });
         }
 
         if (!user) {
-            return res.json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found' });
         }
 
         if (req.user._id == user._id) {
-            return res.json({ error: 'cannot friend yourself' });
+            return res.status(406).json({ error: 'Cannot friend yourself' });
         }
 
         if (req.user.friends.includes(user)) {
-            return res.json({ message: 'already friends' });
+            return res.status(406).json({ message: 'Already friends' });
         }
 
         user.updateOne(
@@ -50,10 +48,10 @@ exports.send_friend_request = (req, res, next) => {
             },
             function (err) {
                 if (err) {
-                    return res.json(err);
+                    return res.status(500).json({ error: err.message });
                 }
 
-                return res.json({ message: 'Friend request sent' });
+                return res.status(200).json({ message: 'Friend request sent' });
             }
         );
     });
@@ -61,7 +59,7 @@ exports.send_friend_request = (req, res, next) => {
 
 exports.accept_friend_request = (req, res, next) => {
     if (req.user.friends.includes(req.params.id)) {
-        return res.json({ message: 'users are already friends' });
+        return res.status(406).json({ message: 'Users are already friends' });
     }
 
     if (req.user.friendRequests.includes(req.params.id)) {
@@ -74,7 +72,7 @@ exports.accept_friend_request = (req, res, next) => {
             { upsert: false },
             function (err) {
                 if (err) {
-                    return res.json(err);
+                    return res.status(500).json({ error: err.message });
                 }
 
                 User.findByIdAndUpdate(
@@ -85,16 +83,20 @@ exports.accept_friend_request = (req, res, next) => {
                     },
                     function (err) {
                         if (err) {
-                            return res.json(err);
+                            return res.status(500).json({ error: err.message });
                         }
 
-                        return res.json({ message: 'Friend request accepted' });
+                        return res
+                            .status(200)
+                            .json({ message: 'Friend request accepted' });
                     }
                 );
             }
         );
     } else {
-        return res.json({ message: 'Friend request is no longer valid' });
+        return res
+            .status(404)
+            .json({ message: 'Friend request is no longer valid' });
     }
 };
 
@@ -107,10 +109,10 @@ exports.decline_friend_request = (req, res, next) => {
         { upsert: false },
         function (err) {
             if (err) {
-                return res.json(err);
+                return res.status(500).json({ error: err.message });
             }
 
-            return res.json({ message: 'Friend request rejected' });
+            return res.status(200).json({ message: 'Friend request rejected' });
         }
     );
 };
