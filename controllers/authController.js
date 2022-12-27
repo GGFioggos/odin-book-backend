@@ -74,7 +74,6 @@ exports.sign_up = [
 
 exports.log_in = async (req, res) => {
     const { email, password } = req.body;
-
     User.findOne({ email: email })
         .select('+password')
         .exec(function (err, user) {
@@ -97,8 +96,11 @@ exports.log_in = async (req, res) => {
                     });
 
                     res.cookie('token', token, { httpOnly: true });
+                    const newUser = user.toObject();
+                    delete newUser.password;
                     return res.status(200).json({
                         message: 'Log in success',
+                        user: newUser,
                     });
                 } else {
                     return res
