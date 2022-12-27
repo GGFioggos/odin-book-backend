@@ -4,7 +4,7 @@ var router = express.Router();
 const postController = require('../controllers/postController');
 const { cookieJwtAuth } = require('../middleware/cookieJwtAuth');
 
-// PATH /POST
+// PATH /API/POST
 
 router.get('/:id', cookieJwtAuth, postController.get_post);
 

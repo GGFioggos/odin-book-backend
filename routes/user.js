@@ -8,7 +8,7 @@ const { cookieJwtAuth } = require('../middleware/cookieJWTAuth');
 const userController = require('../controllers/userController');
 const User = require('../models/User');
 
-// PATH /USER
+// PATH /API/USER
 
 router.get('/:id', userController.get_user);
 

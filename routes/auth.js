@@ -7,7 +7,7 @@ const authController = require('../controllers/authController');
 
 const User = require('../models/User');
 
-// PATH /AUTH
+// PATH /API/AUTH
 
 router.post('/log-in', authController.log_in);
 
