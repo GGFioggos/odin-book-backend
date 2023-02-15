@@ -92,15 +92,18 @@ exports.log_in = async (req, res) => {
 
                 if (results) {
                     const token = jwt.sign({ user }, process.env.SECRET, {
-                        expiresIn: '30m',
+                        expiresIn: '10m',
                     });
+                    res.cookie('token', token, { expiresIn: '10m' });
 
-                    res.cookie('token', token, { httpOnly: true });
+                    // remove password from response
                     const newUser = user.toObject();
                     delete newUser.password;
+
                     return res.status(200).json({
                         message: 'Log in success',
                         user: newUser,
+                        token,
                     });
                 } else {
                     return res
