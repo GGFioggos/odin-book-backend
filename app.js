@@ -18,7 +18,7 @@ var authRouter = require('./routes/auth');
 
 var app = express();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 // app.use(passport.initialize());
