@@ -4,6 +4,7 @@ const faker = require('faker');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/User');
+const Post = require('../models/Post');
 
 exports.get_user = (req, res, next) => {
     User.findById(req.params.id)
@@ -120,4 +121,21 @@ exports.decline_friend_request = (req, res, next) => {
             return res.status(200).json({ message: 'Friend request rejected' });
         }
     );
+};
+
+exports.generate_feed = async (req, res, next) => {
+    const posts = await Post.find()
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'author',
+            },
+        })
+        .populate('author')
+        .where('author')
+        .in([...req.user.friends, req.user._id])
+        .sort({
+            timestamp: 'desc',
+        });
+    return res.json(posts);
 };
