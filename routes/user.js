@@ -9,6 +9,8 @@ const userController = require('../controllers/userController');
 
 router.get('/', cookieJwtAuth, userController.current_user);
 
+router.get('/feed', cookieJwtAuth, userController.generate_feed);
+
 router.get('/:id', userController.get_user);
 
 router.post('/:id/add', cookieJwtAuth, userController.send_friend_request);
