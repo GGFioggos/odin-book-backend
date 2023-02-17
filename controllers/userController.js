@@ -21,6 +21,11 @@ exports.get_user = (req, res, next) => {
         });
 };
 
+exports.current_user = (req, res) => {
+    const user = req.user;
+    return res.json({ user });
+};
+
 exports.send_friend_request = (req, res, next) => {
     User.findById(req.params.id, function (err, user) {
         if (err) {
