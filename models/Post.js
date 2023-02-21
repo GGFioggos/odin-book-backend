@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 var { format } = require('date-fns');
-const months = require('../utils/datehelper');
+const { timeDiff } = require('../utils/datehelper');
 
 const Schema = mongoose.Schema;
 
@@ -22,22 +22,7 @@ PostSchema.virtual('formatted_time').get(function () {
 });
 
 PostSchema.virtual('time_diff').get(function () {
-    const diffInMilliseconds = Math.abs(this.timestamp - Date.now());
-    const diffInHours = Math.ceil(diffInMilliseconds / (1000 * 60 * 60));
-    if (diffInHours < 24) {
-        return diffInHours + 'Hours ago';
-    } else if (diffInHours < 168) {
-        return Math.floor(diffInHours / 24) + ' Days ago';
-    } else {
-        const date = new Date(this.timestamp);
-        return (
-            date.getDate() +
-            ' ' +
-            months[date.getMonth()] +
-            ' ' +
-            date.getFullYear()
-        );
-    }
+    return timeDiff(this.timestamp);
 });
 
 module.exports = mongoose.model('Post', PostSchema);

@@ -13,4 +13,26 @@ const months = {
     12: 'Dec',
 };
 
-module.exports = months;
+function timeDiff(timestamp) {
+    const diffInMilliseconds = Math.abs(timestamp - Date.now());
+    const diffInHours = Math.ceil(diffInMilliseconds / (1000 * 60 * 60));
+    if (diffInHours < 24) {
+        return diffInHours + 'Hours ago';
+    } else if (diffInHours < 168) {
+        return Math.floor(diffInHours / 24) + ' Days ago';
+    } else {
+        const date = new Date(timestamp);
+        return (
+            date.getDate() +
+            ' ' +
+            months[date.getMonth()] +
+            ' ' +
+            date.getFullYear()
+        );
+    }
+}
+
+module.exports = {
+    months,
+    timeDiff,
+};
