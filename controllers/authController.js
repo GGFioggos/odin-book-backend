@@ -72,49 +72,70 @@ exports.sign_up = [
     },
 ];
 
-exports.log_in = async (req, res) => {
-    const { email, password } = req.body;
+exports.log_in = [
+    // const { email, password } = req.body;
+    body('email', 'Email is required').trim().escape().isEmail(),
+    body('password', 'Password is required').trim().escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
 
-    User.findOne({ email: email })
-        .select('+password')
-        .exec(function (err, user) {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ error: errors.array() });
+        }
 
-            if (!user) {
-                return res.status(404).json({ error: 'User does not exist' });
-            }
-
-            bcrypt.compare(password, user.password, function (err, results) {
+        User.findOne({ email: req.body.email })
+            .select('+password')
+            .exec(function (err, user) {
                 if (err) {
                     return res.status(500).json({ error: err.message });
                 }
 
-                if (results) {
-                    const token = jwt.sign({ user }, process.env.SECRET, {
-                        expiresIn: '10m',
-                    });
-
-                    // remove password from response
-                    const newUser = user.toObject();
-                    delete newUser.password;
-
+                if (!user) {
                     return res
-                        .cookie('token', token, { expiresIn: '10m' })
-                        .status(200)
-                        .json({
-                            message: 'Log in success',
-                            user: newUser,
-                        });
-                } else {
-                    return res
-                        .status(403)
-                        .json({ error: 'Passwords do not match' });
+                        .status(404)
+                        .json({ error: 'User does not exist' });
                 }
+
+                bcrypt.compare(
+                    req.body.password,
+                    user.password,
+                    function (err, results) {
+                        if (err) {
+                            return res.status(500).json({ error: err.message });
+                        }
+
+                        if (results) {
+                            const token = jwt.sign(
+                                { user },
+                                process.env.SECRET,
+                                {
+                                    expiresIn: '10m',
+                                }
+                            );
+
+                            // remove password from response
+                            const newUser = user.toObject();
+                            delete newUser.password;
+
+                            return res
+                                .cookie('token', token, {
+                                    expiresIn: '10m',
+                                })
+                                .status(200)
+                                .json({
+                                    message: 'Log in success',
+                                    user: newUser,
+                                });
+                        } else {
+                            return res
+                                .status(403)
+                                .json({ error: 'Passwords do not match' });
+                        }
+                    }
+                );
             });
-        });
-};
+    },
+];
 
 exports.log_out = (req, res) => {
     res.status(200).clearCookie('token');
