@@ -43,9 +43,9 @@ exports.sign_up = [
             return res.status(400).json({ error: errors.array() });
         }
         // CHECK IF USER WITH THE SAME EMAIL EXISTS
-        User.findOne({ email: req.body.email }, (err, user) => {
-            if (err) {
-                return res.status(500).json(err);
+        User.findOne({ email: req.body.email }, (error, user) => {
+            if (error) {
+                return res.status(500).json({ error });
             }
             // USER EXISTS
             if (user) {
@@ -135,7 +135,7 @@ exports.log_in = [
                         } else {
                             return res
                                 .status(403)
-                                .json({ error: 'Passwords do not match' });
+                                .json({ error: 'Incorrect password' });
                         }
                     }
                 );
