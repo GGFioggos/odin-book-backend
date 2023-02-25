@@ -26,10 +26,16 @@ exports.sign_up = [
         .escape()
         .isLength({ min: 4, max: 25 }),
     body('profilePictureUrl')
-        .optional()
+        .optional({ checkFalsy: true })
         .trim()
         .isURL()
         .withMessage('Please enter a valid image URL'),
+    body(
+        'passwordConfirm',
+        'Password confirm must have the same value as the password field.'
+    )
+        .exists()
+        .custom((value, { req }) => value === req.body.password),
     (req, res, next) => {
         const errors = validationResult(req);
 
