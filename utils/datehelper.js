@@ -16,8 +16,16 @@ const months = {
 function timeDiff(timestamp) {
     const diffInMilliseconds = Math.abs(timestamp - Date.now());
     const diffInHours = Math.ceil(diffInMilliseconds / (1000 * 60 * 60));
+
+    if (diffInHours <= 1) {
+        return Math.ceil(diffInMilliseconds / (1000 * 60)) + ' Minutes ago';
+    }
+
     if (diffInHours < 24) {
-        return diffInHours + 'Hours ago';
+        if (diffInHours == 1) {
+            return diffInHours + ' Hour ago';
+        }
+        return diffInHours + ' Hours ago';
     } else if (diffInHours < 168) {
         return Math.floor(diffInHours / 24) + ' Days ago';
     } else {
