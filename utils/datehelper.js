@@ -18,16 +18,16 @@ function timeDiff(timestamp) {
     const diffInHours = Math.ceil(diffInMilliseconds / (1000 * 60 * 60));
 
     if (diffInHours <= 1) {
-        return Math.ceil(diffInMilliseconds / (1000 * 60)) + ' Minutes ago';
+        return Math.ceil(diffInMilliseconds / (1000 * 60)) + 'm';
     }
 
     if (diffInHours < 24) {
-        if (diffInHours == 1) {
-            return diffInHours + ' Hour ago';
-        }
-        return diffInHours + ' Hours ago';
+        // if (diffInHours == 1) {
+        //     return diffInHours + ' h';
+        // }
+        return diffInHours + 'h';
     } else if (diffInHours < 168) {
-        return Math.floor(diffInHours / 24) + ' Days ago';
+        return Math.floor(diffInHours / 24) + 'd';
     } else {
         const date = new Date(timestamp);
         return (
