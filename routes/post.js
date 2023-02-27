@@ -10,7 +10,7 @@ router.get('/:id', cookieJwtAuth, postController.get_post);
 
 router.post('/create', cookieJwtAuth, postController.create_post);
 
-router.post('/:id/delete', cookieJwtAuth, postController.delete_post);
+router.delete('/:id/delete', cookieJwtAuth, postController.delete_post);
 
 router.post('/:id/like', cookieJwtAuth, postController.like_post);
 
