@@ -79,7 +79,6 @@ exports.sign_up = [
 ];
 
 exports.log_in = [
-    // const { email, password } = req.body;
     body('email', 'Email is required').trim().escape().isEmail(),
     body('password', 'Password is required').trim().escape(),
     (req, res, next) => {
@@ -123,15 +122,10 @@ exports.log_in = [
                             const newUser = user.toObject();
                             delete newUser.password;
 
-                            return res
-                                .cookie('token', token, {
-                                    expiresIn: '10m',
-                                })
-                                .status(200)
-                                .json({
-                                    message: 'Log in success',
-                                    user: newUser,
-                                });
+                            return res.cookie('token', token).status(200).json({
+                                message: 'Log in success',
+                                user: newUser,
+                            });
                         } else {
                             return res
                                 .status(403)
@@ -146,4 +140,29 @@ exports.log_in = [
 exports.log_out = (req, res) => {
     res.status(200).clearCookie('token');
     res.end();
+};
+
+exports.refresh = (req, res, next) => {
+    const refreshToken = req.cookies.token;
+    if (!refreshToken) {
+        res.status(403).json({ error: err });
+        next();
+    }
+
+    jwt.verify(refreshToken, process.env.SECRET, (err, decoded) => {
+        if (err) {
+            res.status(403).json({ error: err });
+            next();
+        }
+
+        const accessToken = jwt.sign(
+            {
+                user: decoded.user,
+            },
+            process.env.SECRET,
+            { expiresIn: '15m' }
+        );
+        res.cookie('token', accessToken);
+        next();
+    });
 };

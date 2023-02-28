@@ -4,12 +4,18 @@ var router = express.Router();
 const { cookieJwtAuth } = require('../middleware/cookieJWTAuth');
 
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 // PATH /API/USER
 
 router.get('/', cookieJwtAuth, userController.current_user);
 
-router.get('/feed', cookieJwtAuth, userController.generate_feed);
+router.get(
+    '/feed',
+    cookieJwtAuth,
+    authController.refresh,
+    userController.generate_feed
+);
 
 router.get('/:id', userController.get_user);
 
