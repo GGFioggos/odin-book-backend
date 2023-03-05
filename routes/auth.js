@@ -1,11 +1,7 @@
 require('dotenv').config();
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
 const authController = require('../controllers/authController');
-
-const User = require('../models/User');
 
 // PATH /API/AUTH
 
