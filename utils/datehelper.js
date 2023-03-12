@@ -31,11 +31,7 @@ function timeDiff(timestamp) {
     } else {
         const date = new Date(timestamp);
         return (
-            date.getDate() +
-            ' ' +
-            months[date.getMonth()] +
-            ' ' +
-            date.getFullYear()
+            date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
         );
     }
 }

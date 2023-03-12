@@ -1,6 +1,5 @@
 require('dotenv').config();
 var cors = require('cors');
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -11,7 +10,6 @@ var session = require('express-session');
 // DB SETUP
 require('./utils/mongoConfig');
 
-var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var postRouter = require('./routes/post');
 var authRouter = require('./routes/auth');
@@ -28,7 +26,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', indexRouter);
 app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);
 app.use('/api/auth', authRouter);
