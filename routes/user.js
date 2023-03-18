@@ -17,6 +17,8 @@ router.get(
     userController.generate_feed
 );
 
+router.get('/:id/posts', userController.get_user_posts);
+
 router.get('/:id', userController.get_user);
 
 router.post('/:id/add', cookieJwtAuth, userController.send_friend_request);

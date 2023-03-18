@@ -27,6 +27,23 @@ exports.current_user = (req, res) => {
     return res.json({ user });
 };
 
+exports.get_user_posts = async (req, res) => {
+    const posts = await Post.find()
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'author',
+            },
+        })
+        .populate('author')
+        .where('author')
+        .in(req.params.id)
+        .sort({
+            timestamp: 'desc',
+        });
+    return res.json(posts);
+};
+
 exports.send_friend_request = (req, res, next) => {
     User.findById(req.params.id, function (err, user) {
         if (err) {
