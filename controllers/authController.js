@@ -89,6 +89,7 @@ exports.log_in = [
         }
 
         User.findOne({ email: req.body.email })
+            .populate('friendRequests')
             .select('+password')
             .exec(function (err, user) {
                 if (err) {
