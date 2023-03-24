@@ -23,6 +23,8 @@ router.get('/:id', userController.get_user);
 
 router.post('/:id/add', cookieJwtAuth, userController.send_friend_request);
 
+router.post('/:id/remove', cookieJwtAuth, userController.remove_friend);
+
 router.post(
     '/request/:id/accept',
     cookieJwtAuth,
