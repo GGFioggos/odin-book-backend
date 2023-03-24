@@ -58,7 +58,7 @@ exports.send_friend_request = (req, res, next) => {
             return res.status(406).json({ error: 'Cannot friend yourself' });
         }
 
-        if (req.user.friends.includes(user)) {
+        if (req.user.friends.includes(user._id.toString())) {
             return res.status(406).json({ message: 'Already friends' });
         }
 
@@ -80,12 +80,54 @@ exports.send_friend_request = (req, res, next) => {
     });
 };
 
+exports.remove_friend = (req, res) => {
+    User.findById(req.params.id, function (err, user) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log(req.user.firends);
+        console.log(user._id.toString());
+        if (!req.user.friends.includes(user._id.toString())) {
+            return res.status(406).json({ message: 'Users are not friends' });
+        }
+
+        User.findByIdAndUpdate(
+            req.user._id,
+            {
+                $pull: { friends: user._id },
+            },
+            { upsert: false },
+            function (err) {
+                if (err) return res.status(500).json({ error: err.message });
+            }
+        );
+
+        User.findByIdAndUpdate(
+            req.params.id,
+            {
+                $pull: { friends: req.user._id },
+            },
+            { upsert: false },
+            function (err) {
+                if (err) return res.status(500).json({ error: err.message });
+
+                return res
+                    .status(200)
+                    .json({ message: 'Friend removed successfully' });
+            }
+        );
+    });
+};
+
 exports.accept_friend_request = (req, res, next) => {
     if (req.user.friends.includes(req.params.id)) {
         return res.status(406).json({ message: 'Users are already friends' });
     }
+    console.log(req.user.friendRequests);
 
-    if (req.user.friendRequests.includes(req.params.id)) {
+    if (
+        req.user.friendRequests.some((request) => request._id === req.params.id)
+    ) {
         User.findByIdAndUpdate(
             req.user._id,
             {
@@ -154,5 +196,5 @@ exports.generate_feed = async (req, res, next) => {
         .sort({
             timestamp: 'desc',
         });
-    return res.json(posts);
+    return res.status(200).json(posts);
 };
