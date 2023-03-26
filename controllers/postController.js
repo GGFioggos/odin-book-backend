@@ -85,7 +85,8 @@ exports.delete_post = (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         // CHECK IF THE USER IS THE AUTHOR
-        if (post.author._id != req.user._id) {
+
+        if (post.author._id.toString() != req.user._id.toString()) {
             return res.status(401).json({
                 message: 'No authorization to delete this post',
             });
