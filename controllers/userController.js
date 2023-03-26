@@ -123,46 +123,37 @@ exports.accept_friend_request = (req, res, next) => {
     if (req.user.friends.includes(req.params.id)) {
         return res.status(406).json({ message: 'Users are already friends' });
     }
-    console.log(req.user.friendRequests);
 
-    if (
-        req.user.friendRequests.some((request) => request._id === req.params.id)
-    ) {
-        User.findByIdAndUpdate(
-            req.user._id,
-            {
-                $addToSet: { friends: req.params.id },
-                $pull: { friendRequests: req.params.id },
-            },
-            { upsert: false },
-            function (err) {
-                if (err) {
-                    return res.status(500).json({ error: err.message });
-                }
-
-                User.findByIdAndUpdate(
-                    req.params.id,
-                    {
-                        $addToSet: { friends: req.user._id },
-                        upsert: false,
-                    },
-                    function (err) {
-                        if (err) {
-                            return res.status(500).json({ error: err.message });
-                        }
-
-                        return res
-                            .status(200)
-                            .json({ message: 'Friend request accepted' });
-                    }
-                );
+    User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $addToSet: { friends: req.params.id },
+            $pull: { friendRequests: req.params.id },
+        },
+        { upsert: false },
+        function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
             }
-        );
-    } else {
-        return res
-            .status(404)
-            .json({ message: 'Friend request is no longer valid' });
-    }
+
+            User.findByIdAndUpdate(
+                req.params.id,
+                {
+                    $addToSet: { friends: req.user._id },
+                    upsert: false,
+                },
+                function (err) {
+                    if (err) {
+                        return res.status(500).json({ error: err.message });
+                    }
+
+                    return res
+                        .status(200)
+                        .json({ message: 'Friend request accepted' });
+                }
+            );
+        }
+    );
 };
 
 exports.decline_friend_request = (req, res, next) => {
