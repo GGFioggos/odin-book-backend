@@ -8,7 +8,6 @@ var session = require('express-session');
 // var passport = require('passport');
 
 // DB SETUP
-require('./utils/mongoConfig');
 
 var userRouter = require('./routes/user');
 var postRouter = require('./routes/post');

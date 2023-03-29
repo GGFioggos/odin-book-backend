@@ -7,6 +7,7 @@
 var app = require('../index');
 var debug = require('debug')('odin-book-backend:server');
 var http = require('http');
+const { dbConnect } = require('../utils/mongoConfig');
 
 /**
  * Get port from environment and store in Express.
@@ -25,9 +26,13 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// Connect to DB
+dbConnect().then(() => {
+    console.log('listening');
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+});
 
 /**
  * Normalize a port into a number, string, or false.
