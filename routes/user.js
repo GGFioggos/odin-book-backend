@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { cookieJwtAuth } = require('../middleware/cookieJWTAuth');
+const { cookieJwtAuth } = require('../middleware/cookieJWTAuth.js');
 
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');

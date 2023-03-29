@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const postController = require('../controllers/postController');
-const { cookieJwtAuth } = require('../middleware/cookieJwtAuth');
+const { cookieJwtAuth } = require('../middleware/cookieJwtAuth.js');
 
 // PATH /API/POST
 
