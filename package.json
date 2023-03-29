@@ -1,6 +1,6 @@
 {
     "name": "odin-book-backend",
-    "main": "app.js",
+    "main": "index.js",
     "version": "0.0.0",
     "private": true,
     "scripts": {
